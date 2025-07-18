@@ -28,7 +28,7 @@ app.use(cookieParser())
 app.use(express.json());
 app.use(express.static('.'));
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500', 'http://127.0.0.1:5500',process.env.FRONTEND_URL], // Add your frontend URLs
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500', 'https://docu-mentor-murex.vercel.app',process.env.FRONTEND_URL], // Add your frontend URLs
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
