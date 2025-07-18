@@ -6,7 +6,6 @@ import { OpenAIEmbeddings, ChatOpenAI } from "@langchain/openai"
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import {TextLoader} from "langchain/document_loaders/fs/text"
 import {PDFLoader} from "@langchain/community/document_loaders/fs/pdf"
-
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import cors from 'cors';
 import session from 'express-session';
@@ -28,9 +27,10 @@ app.use(cookieParser())
 app.use(express.json());
 app.use(express.static('.'));
 app.use(cors({
-    origin: "https://docu-mentor-murex.vercel.app", // Add your frontend URLs
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500', 'http://127.0.0.1:5500',process.env.FRONTEND_URL,"https://docu-mentor-murex.vercel.app"], // Add your frontend URLs
     credentials: true,
-    
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization',"Set-Cookie"]
 }));
 
 // const SqliteStore = require("better-sqlite3-session-store")(session)
@@ -38,7 +38,6 @@ const SqliteStore = CreateSqliteStore(session)
 const db = new sqlite("sessions.db", { verbose: console.log });
 // Session middleware
 app.use(session({
-    name: 'seshion',
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
@@ -50,9 +49,9 @@ app.use(session({
         } // 24 hours
     }),
     cookie: { 
-        secure:true,// set to true if using https
+        // set to true if using https
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: 'none',// Required for cross-origin requests
+        // Required for cross-origin requests
         httpOnly: true
     }
 }));
