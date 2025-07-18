@@ -19,21 +19,21 @@ export const model = new ChatOpenAI({
 })
 
 
-    const splitter = new RecursiveCharacterTextSplitter({
-        chunkSize: 500,
-        chunkOverlap: 50,
-    });
-    const text = fs.readFileSync(path.resolve("scrimba.txt"), "utf-8");
+    // const splitter = new RecursiveCharacterTextSplitter({
+    //     chunkSize: 500,
+    //     chunkOverlap: 50,
+    // });
+    // const text = fs.readFileSync(path.resolve("scrimba.txt"), "utf-8");
 
-    const loader = new TextLoader("scrimba.txt")
-    const docs = await loader.load()
+    // const loader = new TextLoader("scrimba.txt")
+    // const docs = await loader.load()
 
-    const pdfLoader = new PDFLoader("rksfac.pdf")
-    const pdfDocs = await pdfLoader.load()
+    // const pdfLoader = new PDFLoader("rksfac.pdf")
+    // const pdfDocs = await pdfLoader.load()
 
     // console.log(docs)
-    const pdfChunks = await splitter.splitDocuments(pdfDocs)
-    const chunks = await splitter.splitDocuments(docs)
+    // const pdfChunks = await splitter.splitDocuments(pdfDocs)
+    // const chunks = await splitter.splitDocuments(docs)
     // console.log(pdfChunks);
 
     // const vectorStore = await SupabaseVectorStore.fromDocuments(pdfChunks, new OpenAIEmbeddings({
@@ -43,7 +43,7 @@ export const model = new ChatOpenAI({
     //     client: supabaseClient,
     //     tableName: "documents",
     // })
-    console.log("done")
+    // console.log("done")
    export const embeddings = new OpenAIEmbeddings({
         openAIApiKey: process.env.OPENAI_API_KEY,
         modelName: "text-embedding-3-small",

@@ -6,6 +6,7 @@ import { OpenAIEmbeddings, ChatOpenAI } from "@langchain/openai"
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import {TextLoader} from "langchain/document_loaders/fs/text"
 import {PDFLoader} from "@langchain/community/document_loaders/fs/pdf"
+
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
 import cors from 'cors';
 import session from 'express-session';
@@ -86,18 +87,37 @@ app.post('/api/user/add', upload.single('file'), async (req, res) => {
     try {
         const {user_id} = req.body
         const fileBuffer = req.file.buffer
+        const fileName = req.file.originalname
+        const fileMimeType = req.file.mimetype
         const documentId = crypto.randomUUID();
+        
         if(fileBuffer){
             // console.log(fileBuffer)
             const splitter = new RecursiveCharacterTextSplitter({
                 chunkSize: 500,
                 chunkOverlap: 50,
             });
-            const blob = new Blob([fileBuffer], { type: 'application/pdf' });
-            const loader = new PDFLoader(blob)
-            const docs = await loader.load()
-            const chunks = await splitter.splitDocuments(docs)
-             // optional, for grouping
+            
+            let loader;
+            let docs;
+            
+            // Check file type and use appropriate loader
+            if (fileMimeType === 'application/pdf' || fileName.toLowerCase().endsWith('.pdf')) {
+                // Handle PDF files
+                const blob = new Blob([fileBuffer], { type: 'application/pdf' });
+                loader = new PDFLoader(blob);
+            } else if (fileMimeType === 'text/plain' || fileName.toLowerCase().endsWith('.txt')) {
+                // Handle TXT files
+                const textContent = fileBuffer.toString('utf-8');
+                loader = new TextLoader(textContent);
+            } else {
+                return res.status(400).json({ error: 'Unsupported file type. Please upload a PDF or TXT file.' });
+            }
+            
+            docs = await loader.load();
+            const chunks = await splitter.splitDocuments(docs);
+            
+            // optional, for grouping
             const chunksWithMetadata = chunks.map((chunk, index) => ({
               pageContent: chunk.pageContent,
               metadata: {
@@ -106,13 +126,14 @@ app.post('/api/user/add', upload.single('file'), async (req, res) => {
                 
               }
             }));
-                const vectorStore = await SupabaseVectorStore.fromDocuments(chunksWithMetadata, new OpenAIEmbeddings({
-            openAIApiKey: process.env.OPENAI_API_KEY,
-            modelName: "text-embedding-3-small",
-        }), {
-            client: supabaseClient,
-            tableName: "documents",
-        })
+            
+            const vectorStore = await SupabaseVectorStore.fromDocuments(chunksWithMetadata, new OpenAIEmbeddings({
+                openAIApiKey: process.env.OPENAI_API_KEY,
+                modelName: "text-embedding-3-small",
+            }), {
+                client: supabaseClient,
+                tableName: "documents",
+            });
             // console.log(chunksWithMetadata)
         }
         res.status(200).json({ message: 'Data received successfully' ,documentId});
