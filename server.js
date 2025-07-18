@@ -49,10 +49,10 @@ app.use(session({
         } // 24 hours
     }),
     cookie: { 
-        // set to true if using https
+        secure:true,// set to true if using https
         maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        // Required for cross-origin requests
-        httpOnly: true
+        httpOnly: true,
+        sameSite: 'none'
     }
 }));
 
