@@ -28,10 +28,9 @@ app.use(cookieParser())
 app.use(express.json());
 app.use(express.static('.'));
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500', 'https://docu-mentor-murex.vercel.app',process.env.FRONTEND_URL], // Add your frontend URLs
+    origin: "https://docu-mentor-murex.vercel.app", // Add your frontend URLs
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
+    
 }));
 
 // const SqliteStore = require("better-sqlite3-session-store")(session)
@@ -39,6 +38,7 @@ const SqliteStore = CreateSqliteStore(session)
 const db = new sqlite("sessions.db", { verbose: console.log });
 // Session middleware
 app.use(session({
+    name: 'seshion',
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
     saveUninitialized: false,
