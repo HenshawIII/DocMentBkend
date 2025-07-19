@@ -15,7 +15,7 @@ import { PromptTemplate } from '@langchain/core/prompts';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 import { model } from './index.js';
 import { vectorStoreRetrieval } from './index.js';
-import { MemoryStore } from 'express-session';
+// import { MemoryStore } from 'express-session';
 import cookieParser from 'cookie-parser';
 import sqlite from 'better-sqlite3';
 import CreateSqliteStore from "better-sqlite3-session-store";
@@ -27,10 +27,10 @@ app.use(cookieParser())
 app.use(express.json());
 app.use(express.static('.'));
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'http://localhost:5500', 'http://127.0.0.1:5500',process.env.FRONTEND_URL,"https://docu-mentor-murex.vercel.app"], // Add your frontend URLs
+    origin: "https://docu-mentor-murex.vercel.app", // Add your frontend URLs
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization',"Set-Cookie"]
+    allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // const SqliteStore = require("better-sqlite3-session-store")(session)
@@ -174,7 +174,7 @@ app.post("/api/user/chat", async (req, res) => {
         const standaloneQuestionTemplate = 'Given a question and conversation history if any, convert the question to a standalone question.conversation history: {convHistory} question: {question} standalone question:'
         const standaloneQuestionPrompt = PromptTemplate.fromTemplate(standaloneQuestionTemplate)
         
-        const answerTemplate = `You are a helpful and enthusiastic support bot who can answer a given questions based on the context provided and the conversation history if any. Try to find the answer in the context.If the question is related to the conversation history, use the conversation history to answer the question. If you really don't know the answer, say "I'm sorry, I don't know the answer to that." And direct the questioner to email help@Hictech.com. Don't try to make up an answer. Always speak as if you were chatting to a friend.
+        const answerTemplate = `You are a helpful and enthusiastic support bot who can answer a given questions based on the context provided and the conversation history if any. Try to find the answer in the context.If the question is related to the conversation history, use the conversation history to answer the question. If you really don't know the answer, say "I'm sorry, I don't know the answer to that.". Don't try to make up an answer. Always speak as if you were chatting to a student.
         context: {context}
         conversation history: {convHistory}
         question: {question}
