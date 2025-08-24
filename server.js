@@ -23,6 +23,7 @@ import CreateSqliteStore from "better-sqlite3-session-store";
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1)
 app.use(cookieParser())
 app.use(express.json());
 app.use(express.static('.'));
