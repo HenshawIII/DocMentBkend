@@ -198,8 +198,7 @@ app.post("/api/user/chat", async (req, res) => {
         ## 💡 Key Takeaways
         [Summarize the most important points]
 
-        ## 🔗 Related Concepts
-        [Mention any connected topics if applicable]
+       
 
         If you genuinely don't know the answer, say "Hey there! I'm not quite sure about that one - it's not in the materials I have access to." Never make up information.
 
